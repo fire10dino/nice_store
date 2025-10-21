@@ -97,10 +97,14 @@ if st.session_state.cart:
         total += info["price"] * info["quantity"]
     st.sidebar.markdown("---")
     st.sidebar.subheader(f"💰 Total: ${total:.2f}")
-    if st.sidebar.button("🛍️ Buy Now"):
-        st.sidebar.success("Purchase complete! Example receipt below:")
-        st.sidebar.text("Card: ##########1234\nThank you for shopping with us!")
-        st.session_state.cart = {}
+
+    # Use a form for Buy Now to ensure immediate state update
+    with st.sidebar.form(key="buy_form"):
+        submitted = st.form_submit_button("🛍️ Buy Now")
+        if submitted:
+            st.sidebar.success("Purchase complete! Example receipt below:")
+            st.sidebar.text("Card: ##########1234\nThank you for shopping with us!")
+            st.session_state.cart = {}  # Clear cart immediately
 else:
     st.sidebar.write("Your cart is empty.")
 
@@ -139,3 +143,4 @@ for item, price in categories[category].items():
         with col2:
             st.button("➖ Remove", key=f"remove_{item}", on_click=remove_from_cart, args=(item,))
     i += 1
+
